@@ -1,12 +1,22 @@
 import logo from '../../assets/logo.png';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContex } from '../../contexs/auth';
 
 export default function SingUp() {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { signUp, loadingAuth } = useContext(AuthContex);
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (name !== '' && email !== '' && password !== '') {
+            await signUp(email, password, name);
+        }
+    }
 
     return (
         <div className='container-center'>
@@ -15,13 +25,15 @@ export default function SingUp() {
                     <img src={logo} alt='Logo do sistema de chamados' />
                 </div>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <h1>Cadastrar nova conta</h1>
                     <input type='text' placeholder='Digite seu nome...' value={name} onChange={(e) => setName(e.target.value)} />
                     <input type='text' placeholder='email@email.com' value={email} onChange={(e) => setEmail(e.target.value)} />
                     <input type='password' placeholder='Digite sua senha...' value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                    <button type='submit'>Cadastrar</button>
+                    <button type='submit'>
+                        {loadingAuth ? 'Carregando...' : 'Cadastrar'}
+                    </button>
                 </form>
                 <Link to="/">Já possuí uma conta? Faça o login!</Link>
             </div>
